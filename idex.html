@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realidad Aumentada - Marcador Facial</title>
+    <script src="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.1.1/dist/model-viewer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@google/model-viewer@2.1.1/dist/model-viewer-legacy.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .instructions h2 {
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        .button-container {
+            margin: 20px 0;
+        }
+        
+        .ar-button {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .ar-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 65, 108, 0.6);
+        }
+        
+        .ar-button:active {
+            transform: translateY(1px);
+        }
+        
+        .ar-view {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .face-marker {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            z-index: 10;
+            display: none;
+        }
+        
+        .demo-image {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .note {
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .ar-button {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Realidad Aumentada Facial</h1>
+        <p class="subtitle">Experimenta ARCore en tu navegador</p>
+    </header>
+    
+    <div class="container">
+        <div class="instructions">
+            <h2>¿Cómo funciona?</h2>
+            <ol>
+                <li>Asegúrate de estar en un dispositivo Android con ARCore compatible</li>
+                <li>Haz clic en el botón "Activar AR" para iniciar la cámara</li>
+                <li>Permite el acceso a la cámara cuando se te solicite</li>
+                <li>Aparecerá un círculo rojo en tu frente entre las cejas</li>
+                <li>Mueve tu cabeza para ver cómo el marcador se mantiene en posición</li>
+            </ol>
+        </div>
+        
+        <div class="button-container">
+            <button class="ar-button" id="ar-button">Activar AR</button>
+        </div>
+        
+        <div class="ar-view" id="ar-view">
+            <p>La vista de AR aparecerá aquí</p>
+            <div class="face-marker" id="face-marker"></div>
+        </div>
+        
+        <img src="https://i.imgur.com/8Q7Yy9H.png" alt="Ejemplo de marcador facial" class="demo-image">
+        
+        <div class="note">
+            <p>Nota: Esta es una demostración visual. Para una implementación completa de ARCore con detección facial, se necesitaría integrar la API de ARCore y la API de detección facial de JavaScript.</p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Realidad Aumentada con ARCore & JavaScript | Demostración</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const arButton = document.getElementById('ar-button');
+            const arView = document.getElementById('ar-view');
+            const faceMarker = document.getElementById('face-marker');
+            
+            arButton.addEventListener('click', function() {
+                // En una implementación real, aquí se inicializaría ARCore
+                // y se activaría la cámara con la API correspondiente
+                
+                // Simulación del comportamiento
+                arView.innerHTML = '<p>Inicializando cámara y ARCore...</p>';
+                arView.style.background = '#000';
+                
+                setTimeout(function() {
+                    arView.innerHTML = `
+                        <div style="width:100%; height:100%; background:url('https://i.imgur.com/9Z8Qb0v.jpg') center/cover; position:relative;">
+                            <div style="position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); width:20px; height:20px; background:red; border-radius:50%; box-shadow:0 0 15px rgba(255,0,0,0.7);"></div>
+                        </div>
+                    `;
+                    
+                    // Mostrar el marcador facial
+                    faceMarker.style.display = 'block';
+                    
+                    // Cambiar el texto del botón
+                    arButton.textContent = 'AR Activado';
+                    arButton.style.background = 'linear-gradient(to right, #00b09b, #96c93d)';
+                    arButton.disabled = true;
+                }, 2000);
+            });
+            
+            // Simulación de movimiento del marcador
+            let markerX = 50;
+            let markerY = 50;
+            let directionX = 1;
+            let directionY = 1;
+            
+            setInterval(function() {
+                if (faceMarker.style.display === 'block') {
+                    markerX += directionX * 0.5;
+                    markerY += directionY * 0.3;
+                    
+                    if (markerX > 55 || markerX < 45) directionX *= -1;
+                    if (markerY > 52 || markerY < 48) directionY *= -1;
+                    
+                    faceMarker.style.left = markerX + '%';
+                    faceMarker.style.top = markerY + '%';
+                }
+            }, 50);
+        });
+    </script>
+</body>
+</html>
