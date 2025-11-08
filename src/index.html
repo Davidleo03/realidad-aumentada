@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="./public/js/face-api.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root{
+            --bg: #0f1724;
+            --card: #0b1a2b;
+            --accent: #06b6d4;
+            --muted: #94a3b8;
+            --btn-text: #ffffff;
+            --radius: 12px;
+            --max-width: 420px;
+        }
+        html,body{height:100%;}
+        body{
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            background: linear-gradient(180deg,#071428 0%, #0b1220 100%);
+            color: #e6eef8;
+            -webkit-font-smoothing:antialiased;
+            padding: 16px;
+            display:flex;
+            align-items:flex-start;
+            justify-content:center;
+        }
+        .page{width:100%;max-width:var(--max-width);}
+        .topbar{margin-bottom:12px}
+        .topbar h1{font-size:20px;margin-bottom:4px}
+        .topbar .subtitle{color:var(--muted);font-size:13px}
+
+        .viewer{display:flex;flex-direction:column;gap:12px}
+        .video-wrap{position:relative;width:100%;background:#000;border-radius:var(--radius);overflow:hidden}
+        .video-wrap video{display:block;width:100%;height:auto}
+        .video-wrap canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+        .controls{display:flex;justify-content:center}
+        .btn{
+            background:linear-gradient(90deg,var(--accent),#0ea5a6);
+            color:var(--btn-text);
+            border:none;padding:14px 18px;border-radius:10px;font-weight:600;font-size:16px;
+            box-shadow:0 6px 18px rgba(2,6,23,0.6);width:100%;max-width:320px
+        }
+        .btn:disabled{opacity:0.7}
+
+        @media(min-width:800px){
+            body{align-items:center}
+            .topbar h1{font-size:22px}
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header class="topbar">
+            <h1>Escaneo de rostro</h1>
+            <p class="subtitle">Presiona "Iniciar escaneo" y concede acceso a la cámara</p>
+        </header>
+
+        <main class="viewer">
+            <div class="video-wrap">
+                <video id="inputVideo" autoplay muted playsinline></video>
+                <canvas id="overlay"></canvas>
+            </div>
+
+            <div class="controls">
+                <button id="startScanBtn" class="btn">Iniciar escaneo</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="./public/js/script_webcam.js"></script>
+</body>
+
+</html>
