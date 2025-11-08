@@ -63,7 +63,7 @@ async function onPlay() {
     }
 
     // Repetir ciclo
-    setTimeout(() => onPlay(), 100);
+    setTimeout(() => onPlay(), 50);
 }
 
 // Conectar botón
